@@ -1,0 +1,15 @@
+.PiGPIOControl_config_group {
+	border: 2px solid #a1a1a1;
+	padding: 10px 20px 10px 20px;
+	margin-bottom: 20px;
+	border-radius: 10px;
+	outline-offset: 10px;
+}
+
+.accordion-body#sidebar_plugin_PiGPIOControl.in {
+	overflow:visible;
+}
+
+.PiGPIOControl_dutycycle_dropdown {
+	min-width: auto;
+}

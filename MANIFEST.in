@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_PiGPIOControl/templates *
+recursive-include octoprint_PiGPIOControl/translations *
+recursive-include octoprint_PiGPIOControl/static *

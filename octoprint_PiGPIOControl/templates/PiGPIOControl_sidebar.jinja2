@@ -1,0 +1,38 @@
+<div class="row-fluid" data-bind="foreach: {data: outputsStatus, as: 'outputStatus' }">
+    <div class="row-fluid">
+        <div style="display: inline-block;">
+            <div data-bind="text: name"></div>
+            <div data-bind="PiGPIOControl_timer: outputStatus.status.timeout"></div>
+        </div>
+        <div style="float: right; display: flex;">
+            <!-- ko if: outputStatus.status.timeout -->
+                <div class="btn-group">
+                    <button class="btn btn-danger" title="Cancel scheduled shutdown" data-bind="click: $root.cancelOutputSchedule">
+                        <i class="fas fa-calendar-times"></i>
+                    </button>
+                </div>
+            <!-- /ko -->
+            <!-- ko if: outputStatus.type == "Simple" -->
+                <div class="btn-group">
+                    <button class="btn btn-success" data-bind="click: $root.turnOutputOn, attr:{'disabled' : outputStatus.status.current_state != 'OFF'}">ON</button>
+                    <button class="btn btn-danger" data-bind="click: $root.turnOutputOff, attr:{'disabled' : outputStatus.status.current_state != 'ON'}">OFF</button>
+                </div>
+            <!-- /ko -->
+            <!-- ko if: outputStatus.type == "PWM" -->
+                <div class="input-append">
+                    <input class="input-mini" type="number" min=0 max=100 data-bind="numeric, value: outputStatus.status.updated_dutycycle, attr:{'placeholder' : outputStatus.status.current_dutycycle}">
+                    <span class="add-on">%</span>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" data-bind="click: $root.setPWMdutycycle"><i class="fas fa-check"></i></button>
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> </button>
+                    <ul class="dropdown-menu PiGPIOControl_dutycycle_dropdown">
+                        <!-- ko foreach: { data: $root.dutycycle_percentages, as: 'percentage' } -->
+                        <li> <a href="javascript:void(0)" data-bind="text: percentage + '%', click: function() {outputStatus.status.updated_dutycycle = percentage; $root.setPWMdutycycle(outputStatus);}"></a> </li>
+                        <!-- /ko -->
+                </div>
+            <!-- /ko -->
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,151 @@
+<form class="form-horizontal" onsubmit="return false;">
+    <h2>pigpiod Connection</h2>
+    <div class="control-group row-fluid" title="Hostname of pigpio daemon">
+        <label class="control-label" for="PiGPIOControl-pigpiohostname">Hostname</label>
+        <div class="controls">
+            <input id="PiGPIOControl-pigpiohostname" type="text" data-bind="textInput: settingsViewModel.settings.plugins.PiGPIOControl.pigpio_connection.hostname"/>
+        </div>
+    </div>
+    <div class="control-group row-fluid" title="Port of pigpio daemon">
+        <label class="control-label" for="PiGPIOControl-pigpioport">Port</label>
+        <div class="controls">
+            <input id="PiGPIOControl-pigpioport" type="number" data-bind="textInput: settingsViewModel.settings.plugins.PiGPIOControl.pigpio_connection.port"/>
+        </div>
+    </div>
+    <h2>Outputs</h2>
+    <div data-bind="foreach: outputsUpdated">
+    	<h3>
+	    <span data-bind="text: $data.type()"></span>: <span data-bind="text: $data.name"></span>
+	</h3>
+        <div class="PiGPIOControl_config_group">
+            <div class="control-group row-fluid" title="Id of output">
+                <label class="control-label">Id</label>
+                <div class="controls">
+                    <input disabled type="text" data-bind="textInput: id"/>
+                </div>
+            </div>
+            <div class="control-group row-fluid" title="Name of output">
+                <label class="control-label">Name</label>
+                <div class="controls">
+                    <input type="text" data-bind="textInput: name"/>
+                </div>
+            </div>
+            <!-- ko if: $data.type() == "Simple" -->
+                <div class="control-group row-fluid" title="GPIO pin number of output">
+                    <label class="control-label">GPIO Number</label>
+                    <div class="controls">
+                        <input type="number" data-bind="numeric, textInput: $data.config.pin"/>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" title="Active mode of output">
+                    <label class="control-label">Active</label>
+                    <div class="controls">
+                      <select data-bind="value: $data.config.active_mode">
+                          <option value="active_low">LOW</option>
+                          <option value="active_high">HIGH</option>
+                      </select>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" title="Default state of output">
+                    <label class="control-label">Default</label>
+                    <div class="controls">
+                        <select data-bind="value: $data.config.default_state">
+                            <option value="NONE">NONE</option>
+                            <option value="OFF">OFF</option>
+                            <option value="ON">ON</option>
+                        </select>
+                    </div>
+                </div>
+            <!-- /ko -->
+            <!-- ko if: $data.type() == "PWM" -->
+                <div class="control-group row-fluid" title="GPIO pin number of output">
+                    <label class="control-label">GPIO Number</label>
+                    <div class="controls">
+                        <input type="number" data-bind="numeric, textInput: $data.config.pin"/>
+                    </div>
+                </div>
+                <div class="control-group row-fluid" title="GPIO pin number of output">
+                    <label class="control-label">Frequency</label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input type="number" min=0 data-bind="numeric, textInput: $data.config.frequency"/>
+                            <span class="add-on">Hz</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label"> Reverse </label>
+                    <div class="controls">
+                        <input type="checkbox" data-bind="checked: $data.config.reverse"/>
+                        <span class="help-inline">Reverse PWM duty cycle</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label"> Maximum dutycycle </label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input type="number" min=1 max=100 data-bind="numeric, textInput: $data.config.max_dutycycle"/>
+                            <span class="add-on">%</span>
+                        </div>
+                        <span class="help-inline">Maximum dutycycle to output, input dutycyle will stil be 0% to 100% but scaled to the maximum dutycycle</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label"> Default duty cycle </label>
+                    <div class="controls">
+                        <div class="input-append">
+                            <input type="number" min=0 max=100 data-bind="numeric, textInput: $data.config.default_dutycycle"/>
+                            <span class="add-on">%</span>
+                        </div>
+                        <span class="help-inline">Default duty cycle to apply on Octoprint boot</span>
+                    </div>
+                </div>
+            <!-- /ko -->
+            <div class="control-group">
+                <label class="control-label"> Auto Startup </label>
+                <div class="controls">
+                    <input type="checkbox" data-bind="checked: auto_startup"/>
+                    <span class="help-inline">Choose if output should turn on automatomatically when print starts</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"> Auto Shutdown </label>
+                <div class="controls">
+                    <input type="checkbox" data-bind="checked: auto_shutdown"/>
+                    <span class="help-inline">Choose if output should turn off automatomatically when print finishes</span>
+                </div>
+            </div>
+
+            <div data-bind="if: auto_shutdown">
+                <div class="control-group">
+                    <label class="control-label"> Shutdown on Failed or Canceled </label>
+                    <div class="controls">
+                        <input type="checkbox" data-bind="checked: shutdown_on_failed"/>
+                        <span class="help-inline">Choose if output should turn off automatomatically when print is canceled or fails</span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Shutdown Delay</label>
+                    <div class="controls">
+                        <input type="text" data-bind="textInput: shutdown_delay"/>
+                        <span class="help-inline">Time delay in seconds to turn off GPIO when print starts.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group row-fluid">
+                <a title="Remove GPIO Output" class="btn btn-danger" style="float: right;" data-bind="click: $parent.removeOutput">
+                    <i class="icon-trash"></i> Remove Output
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row-fluid">
+        <a title="Add Simple Output" class="btn btn-primary" data-bind="click: addSimpleOutput">
+            <i class="icon-plus"></i> Add Simple Output
+        </a>
+        <a title="Add PWM Output" class="btn btn-primary" data-bind="click: addPWMOutput">
+            <i class="icon-plus"></i> Add PWM Output
+        </a>
+    </div>
+</form>
