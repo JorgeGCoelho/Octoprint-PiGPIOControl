@@ -385,7 +385,7 @@ class PiGPIOControlPlugin(
 				displayName=self._plugin_name,
 				displayVersion=self._plugin_version,
 	
-				type="github_release",
+				type="github_commit",
 				current=self._plugin_version,
 				user="JorgeGCoelho",
 				repo="Octoprint-PiGPIOControl",
