@@ -1,5 +1,5 @@
 <div class="row-fluid" data-bind="foreach: {data: outputsStatus, as: 'outputStatus' }">
-    <div class="row-fluid">
+    <div class="row-fluid" style="margin-bottom: 10px">
         <div style="display: inline-block;">
             <div data-bind="text: name"></div>
             <div data-bind="PiGPIOControl_timer: outputStatus.status.timeout"></div>
