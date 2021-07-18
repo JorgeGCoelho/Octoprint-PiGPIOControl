@@ -263,7 +263,7 @@ class PiGPIOControlPlugin(
 
 	# Settings
 
-	def on_after_startup(self):
+	def on_settings_initialized(self):
 		self.connect_pipgio_daemon()
 		self.outputs_set_default_state()
 
