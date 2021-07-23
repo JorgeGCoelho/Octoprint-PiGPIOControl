@@ -84,7 +84,7 @@ class PiGPIOControlPlugin(
 	def outputs_schedule_off(self, output):
 		if output["type"] == "Simple":
 			self.simple_write_state(output, "OFF")
-		elif output["type"] == "PWN":
+		elif output["type"] == "PWM":
 			self.pwm_write_dutycycle_percentage(output, 0)
 		self.outputs_send_status()
 
