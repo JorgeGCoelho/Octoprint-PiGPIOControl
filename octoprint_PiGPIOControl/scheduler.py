@@ -5,7 +5,7 @@ import threading
 
 class Scheduler(threading.Thread):
 	def __init__(self, logger):
-		super().__init__()
+		super().__init__(daemon=True)
 		self.logger = logger.getChild("scheduler")
 		self.logger.info("scheduler thread")
 		self.condition = threading.Condition()
