@@ -35,15 +35,25 @@ class Scheduler(threading.Thread):
 		return self.unschedule_output_id(output["id"])
 
 	def unschedule_output_id(self, output_id):
-		output_queue = [event for event in self.scheduler.queue if event[3][0]["id"] == output_id]
-		for event in output_queue:
-			try:
-				self.scheduler.cancel(event)
-				self.logger.info("Unscheduled output id " + str(event[3][0]["id"]))
-			except e:
-				self.logger.error("Failed to cancel schedule for output with id " +str(event[3][0]["id"]), exc_info=True)
 		with self.condition:
-			self.condition.notify_all()
+			output_queue = [event for event in self.scheduler.queue if event[3][0]["id"] == output_id]
+			for event in output_queue:
+				try:
+					self.scheduler.cancel(event)
+					self.logger.info("Unscheduled output id " + str(event[3][0]["id"]))
+				except e:
+					self.logger.error("Failed to cancel schedule for output with id " +str(event[3][0]["id"]), exc_info=True)
+				self.condition.notify_all()
+
+	def unschedule_all(self):
+		with self.condition:
+			self.logger.info("Unscheduling all")
+			for event in self.scheduler.queue:
+				try:
+					self.scheduler.cancel(event)
+				except e:
+					self.logger.error("Failed to cancel schedule for output with id " +str(event[3][0]["id"]), exc_info=True)
+				self.condition.notify_all()
 
 	def get_outputs_schedule(self):
 		outputs_schedule = {}

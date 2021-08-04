@@ -55,6 +55,7 @@ class PiGPIOControlPlugin(
 					self.simple_write_state(output, "ON")
 				elif output["type"] == "PWM":
 					self.pwm_write_dutycycle_percentage(output, 100)
+		self.scheduler.unschedule_all()
 		self.outputs_send_status()
 
 	def outputs_print_stopped_successful(self):
