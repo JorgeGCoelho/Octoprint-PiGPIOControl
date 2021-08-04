@@ -36,7 +36,7 @@ $(function() {
 
 		self.cancelOutputSchedule = function(output) {
 			$.ajax({
-				url: window.PLUGIN_BASEURL + "PiGPIOControl/outputs/"+output["id"]+"/unscheduleShutdown",
+				url: OctoPrint.getBlueprintUrl("PiGPIOControl") + "outputs/"+output["id"]+"/unscheduleShutdown",
 				type: "POST",
 				contentType: "application/json; charset=utf-8"
 			}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -62,7 +62,7 @@ $(function() {
 
 		self.setOutputState = function(outputId, state) {
 			$.ajax({
-				url: window.PLUGIN_BASEURL + "PiGPIOControl/outputs/"+outputId+"/simple/" + state,
+				url: OctoPrint.getBlueprintUrl("PiGPIOControl") + "outputs/"+outputId+"/simple/" + state,
 				type: "POST",
 				contentType: "application/json; charset=utf-8"
 			}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -130,7 +130,7 @@ $(function() {
 			if (dutycycle_percentage == undefined)
 				return;
 			$.ajax({
-				url: window.PLUGIN_BASEURL + "PiGPIOControl/outputs/"+output["id"]+"/pwm/" + dutycycle_percentage,
+				url: OctoPrint.getBlueprintUrl("PiGPIOControl") + "/outputs/"+output["id"]+"/pwm/" + dutycycle_percentage,
 				type: "POST",
 				contentType: "application/json; charset=utf-8"
 			}).fail(function(jqXHR, textStatus, errorThrown) {
@@ -146,7 +146,7 @@ $(function() {
 
 		self.requestAndUpdateStatus = function() {
 			$.get({
-				url: window.PLUGIN_BASEURL + "PiGPIOControl/outputs",
+				url: OctoPrint.getBlueprintUrl("PiGPIOControl") + "outputs",
 				dataType: "json"
 			}).done(function(data) {
 				self.updateOutputsStatus(data);
