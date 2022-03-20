@@ -36,13 +36,13 @@ class Scheduler(threading.Thread):
 
 	def unschedule_output_id(self, output_id):
 		with self.condition:
-			output_queue = [event for event in self.scheduler.queue if event[3][0]["id"] == output_id]
+			output_queue = [event for event in self.scheduler.queue if event.argument[0]["id"] == output_id]
 			for event in output_queue:
 				try:
 					self.scheduler.cancel(event)
-					self.logger.info("Unscheduled output id " + str(event[3][0]["id"]))
+					self.logger.info("Unscheduled output id " + str(event.argument[0]["id"]))
 				except e:
-					self.logger.error("Failed to cancel schedule for output with id " +str(event[3][0]["id"]), exc_info=True)
+					self.logger.error("Failed to cancel schedule for output with id " +str(event.argument[0]["id"]), exc_info=True)
 				self.condition.notify_all()
 
 	def unschedule_all(self):
@@ -52,7 +52,7 @@ class Scheduler(threading.Thread):
 				try:
 					self.scheduler.cancel(event)
 				except e:
-					self.logger.error("Failed to cancel schedule for output with id " +str(event[3][0]["id"]), exc_info=True)
+					self.logger.error("Failed to cancel schedule for output with id " +str(event.argument[0]["id"]), exc_info=True)
 				self.condition.notify_all()
 
 	def get_outputs_schedule(self):
@@ -60,8 +60,8 @@ class Scheduler(threading.Thread):
 		current_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 		current_monotonic_time = time.monotonic()
 		for event in self.scheduler.queue:
-			output = event[3][0]
-			delay = event[0] - current_monotonic_time
+			output = event.argument[0]
+			delay = event.time - current_monotonic_time
 			delta = datetime.timedelta(seconds=delay)
 			outputs_schedule[output["id"]] = {"time": current_datetime + delta}
 		return outputs_schedule
