@@ -176,7 +176,7 @@ class PiGPIOControlPlugin(
 
 	## PWM Output
 	def pwm_dutycycle_percentage_to_raw_dutycycle(self, output_pwm, dutycycle_percentage):
-		dutycycle_percentage = max(0, min(100, dutycycle_percentage))
+		dutycycle_percentage = max(0, min(100, int(dutycycle_percentage)))
 		if output_pwm["config"]["reverse"]:
 			dutycycle_percentage = 100 - dutycycle_percentage
 
@@ -351,7 +351,7 @@ class PiGPIOControlPlugin(
 		self.scheduler.unschedule_output(output);
 
 		self.outputs_send_status()
-		return flask.make_response('', 204)
+		return self.outputs_get_status(output_id=output_id)
 
 	@octoprint.plugin.BlueprintPlugin.route("/outputs/<int:output_id>/simple/<string:state>", methods=["POST"])
 	def blueprint_set_simple_output_state(self, output_id, state):
@@ -369,7 +369,7 @@ class PiGPIOControlPlugin(
 
 		self.simple_write_state(output, state)
 		self.outputs_send_status()
-		return flask.make_response('', 204)
+		return self.outputs_get_status(output_id=output_id)
 
 	@octoprint.plugin.BlueprintPlugin.route("/outputs/<int:output_id>/pwm/<int:dutycycle_percentage>", methods=["POST"])
 	def blueprint_set_pwm_output_state(self, output_id, dutycycle_percentage):
@@ -385,7 +385,7 @@ class PiGPIOControlPlugin(
 
 		self.pwm_write_dutycycle_percentage(output, dutycycle_percentage)
 		self.outputs_send_status()
-		return flask.make_response('', 204)
+		return self.outputs_get_status(output_id=output_id)
 
 	# Socket
 
