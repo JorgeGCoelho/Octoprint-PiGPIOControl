@@ -101,13 +101,16 @@ class PiGPIOControlPlugin(
 				dutycycle_percentage = output["config"]["default_dutycycle"]
 				self.pwm_write_dutycycle_percentage(output, dutycycle_percentage)
 
-	def outputs_get_status(self):
+	def outputs_get_status(self, output_id=None):
 		outputs = copy.deepcopy(self._settings.get(["outputs"]))
 		outputs_schedule = None
 		if hasattr(self, "scheduler"):
 			outputs_schedule = self.scheduler.get_outputs_schedule()
 
+		res = []
 		for output in outputs:
+			if output_id != None and output_id != output["id"]:
+				continue
 			if output["type"] == "Simple":
 				output["status"] = self.simple_get_status(output)
 			elif output["type"] == "PWM":
@@ -118,7 +121,11 @@ class PiGPIOControlPlugin(
 					output["status"]["timeout"] = outputs_schedule[output["id"]]["time"].isoformat()
 				except KeyError:
 					output["status"]["timeout"] = None
-		return outputs
+			res.append(output)
+		if output_id == None:
+			return res
+		else:
+			return res[0] if res else None
 
 	def outputs_send_status(self):
 		self.send_message("output_status", self.outputs_get_status())
@@ -318,9 +325,16 @@ class PiGPIOControlPlugin(
 
 	# Blueprint
 
+	def is_blueprint_csrf_protected(self):
+		return True
+
 	@octoprint.plugin.BlueprintPlugin.route("/outputs", methods=["GET"])
 	def blueprint_get_outputs_state(self):
 		return flask.jsonify(self.outputs_get_status())
+
+	@octoprint.plugin.BlueprintPlugin.route("/outputs/<int:output_id>", methods=["GET"])
+	def blueprint_get_outputs_state_single(self, output_id):
+		return flask.jsonify(self.outputs_get_status(output_id=output_id))
 
 	@octoprint.plugin.BlueprintPlugin.route("/outputs/<int:output_id>/unscheduleShutdown", methods=["POST"])
 	def blueprint_unschedule_output_shutdown(self, output_id):
